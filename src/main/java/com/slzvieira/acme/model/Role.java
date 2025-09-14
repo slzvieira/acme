@@ -1,4 +1,4 @@
-package com.slzvieira.acme.controller.model;
+package com.slzvieira.acme.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

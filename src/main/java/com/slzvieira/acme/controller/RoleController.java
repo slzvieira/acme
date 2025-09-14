@@ -1,11 +1,13 @@
 package com.slzvieira.acme.controller;
 
-import com.slzvieira.acme.controller.model.Role;
+import com.slzvieira.acme.model.Role;
+import com.slzvieira.acme.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +23,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/roles")
 @Tag(name = "Roles", description = "Operations related to roles")
+@RequiredArgsConstructor
 public class RoleController {
+
+    private final RoleService service;
 
     @Operation(summary = "Get a specific role by ID")
     @ApiResponses(value = {
@@ -29,7 +34,7 @@ public class RoleController {
             @ApiResponse(responseCode = "404", description = "Role not found")})
     @GetMapping("/{id}")
     public ResponseEntity<Role> findRoleById(@PathVariable @Parameter(description = "Role code") Long id) {
-        return ResponseEntity.ok(new Role(1L, "Padeiro"));
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @Operation(summary = "Get the list of all registered roles")
@@ -38,7 +43,7 @@ public class RoleController {
             @ApiResponse(responseCode = "404", description = "No roles found")})
     @GetMapping
     public ResponseEntity<List<Role>> findAllRoles() {
-        return ResponseEntity.ok(List.of(new Role(1L, "Padeiro"), new Role(2L, "Quitandeiro"), new Role(3L, "Confeiteiro")));
+        return ResponseEntity.ok(service.findAll());
     }
 
     @Operation(summary = "Create a new role")
@@ -47,7 +52,7 @@ public class RoleController {
             @ApiResponse(responseCode = "400", description = "Invalid data or required data missing")})
     @PostMapping
     public ResponseEntity<Role> createRole(@RequestBody Role role) {
-        return ResponseEntity.ok(role);
+        return ResponseEntity.ok(service.create(role));
     }
 
     @Operation(summary = "Update an existing role")
@@ -57,7 +62,7 @@ public class RoleController {
             @ApiResponse(responseCode = "404", description = "Role not found")})
     @PutMapping("/{id}")
     public ResponseEntity<Role> updateRole(@PathVariable @Parameter(description = "Role code") Long id, @RequestBody Role role) {
-        return ResponseEntity.ok(role);
+        return ResponseEntity.ok(service.update(id, role));
     }
 
     @Operation(summary = "Delete a role by ID")
@@ -67,6 +72,6 @@ public class RoleController {
             @ApiResponse(responseCode = "405", description = "Role cannot be deleted")})
     @DeleteMapping("/{id}")
     public ResponseEntity<Role> deleteRole(@PathVariable @Parameter(description = "Role code") Long id) {
-        return ResponseEntity.ok(new Role(1L, "Padeiro"));
+        return ResponseEntity.ok(service.delete(id));
     }
 }
